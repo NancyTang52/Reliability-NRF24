@@ -36,7 +36,6 @@
  * Includes
  */
 #include "nRF24L01P.h"
-#include <cstdio>
 
 /**
  * Defines
@@ -871,7 +870,7 @@ int nRF24L01P::write(int pipe, char *data, int count) {
     wait_us(_NRF24L01P_TIMING_Thce_us);
     disable();
 
-    while ( !( getStatusRegister() & _NRF24L01P_STATUS_TX_DS ) ) {
+    while ( !( getStatusRegister() & _NRF24L01P_STATUS_TX_DS ) &&  !( getStatusRegister() & _NRF24L01P_STATUS_MAX_RT )) {
 
         // Wait for the transfer to complete
 
@@ -1027,4 +1026,15 @@ int nRF24L01P::getStatusRegister(void) {
 
     return status;
 
+}
+
+void nRF24L01P::enableAutoRetransmit(int delay, int count) {
+    if(delay < 250 || delay > 4000) {
+        printf("Error: delay must be between 250 and 4000 ms");
+    } else if(count < 0 || count > 16) {
+        printf("Error: retransmit count must be between 0 and 15");
+    } else {
+        int setupTr = ((delay / 250) << 4) + count;
+        setRegister(_NRF24L01P_REG_SETUP_RETR, setupTr);
+    }
 }
