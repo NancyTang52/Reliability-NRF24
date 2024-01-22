@@ -102,7 +102,7 @@ void NRF24::run_packet_error_rate_test() {
             successful_transitions++;
         }
 
-        thread_sleep_for(100);
+        thread_sleep_for(50);
     }
     
     delete[] data;
@@ -150,7 +150,7 @@ void NRF24::send_config_update() {
         write_new_config(old_config);
 
         m_nrf_comm.write(NRF24L01P_PIPE_P0, data, TRANSFER_SIZE);   
-        ThisThread::sleep_for(250);
+        ThisThread::sleep_for(50);
 
         write_new_config(new_config);
 
@@ -164,7 +164,7 @@ void NRF24::send_config_update() {
         // send message, incase the other nrf is switched
         m_nrf_comm.write(NRF24L01P_PIPE_P0, data, TRANSFER_SIZE);   
 
-        ThisThread::sleep_for(250);
+        ThisThread::sleep_for(50);
     }
 }
 
@@ -219,6 +219,7 @@ bool NRF24::did_receive_acknowledgement(NRF24Config& config, char* message) {
         m_nrf_comm.read(NRF24L01P_PIPE_P0, received_data, TRANSFER_SIZE);
 
         if(strcmp(received_data, message) ==  0) {
+            delete[] received_data;
             return true;
         }
 
