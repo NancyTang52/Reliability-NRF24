@@ -16,22 +16,28 @@ struct NRF24Config {
 class NRF24 {
 
 public:
+    static constexpr char MESSAGE[] = { 'C', 'o', 'd', '\0'};
     // The nRF24L01+ supports transfers from 1 to 32 bytes, but Sparkfun's
     // "Nordic Serial Interface Board" (http://www.sparkfun.com/products/9019)
-    static constexpr int TRANSFER_SIZE = 4;
-    // NOTE: the transfer size and message size need to be the same!
-    static constexpr char* TRANSFER_MESSAGE = "ABCD";
-    static constexpr int MAX_ACKNOWLEDGMENT_TIMEOUT_MS = 250;
+    static constexpr int TRANSFER_SIZE = sizeof(MESSAGE);
+    static constexpr int MAX_ACKNOWLEDGMENT_TIMEOUT_MS = 25;
 
     NRF24();
 
-    void run_packet_error_rate_test(NRF24Config config);
-    
-private:
+    void set_receiver();
 
-    bool did_receive_acknowledgement();
+    void run_packet_error_rate_test(NRF24Config config);
+
+    void send_message();
+
+    void ensure_connection(NRF24Config& config);
+
+    bool did_receive_acknowledgement(NRF24Config& config);
+    
+    void acknowledge_package();
 
     void write_new_config(NRF24Config config);
+private:
 
     // void print_nrf_info();
 
@@ -39,9 +45,11 @@ private:
 
     void print_csv_stats(NRF24Config config, int successful_transitions);
 
+    void print_nrf_info();
+
     // Members
     nRF24L01P m_nrf_comm;
-    static constexpr int TOTAL_MESSAGES_TO_TEST = 10'000;
+    static constexpr int TOTAL_MESSAGES_TO_TEST = 100;
 };
 
 #endif

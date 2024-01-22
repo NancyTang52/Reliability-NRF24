@@ -2,6 +2,7 @@
 .mbed
 projectfiles
 *.py*
+*.csv
 mbed-os
 BUILD
 .vscode

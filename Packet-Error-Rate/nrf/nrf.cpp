@@ -1,5 +1,6 @@
 #include "nrf.h"
 #include <cstdio>
+#include <cstring>
 
 #define MOSI_PIN    D11
 #define MISO_PIN    D12
@@ -25,40 +26,98 @@ NRF24::NRF24()
     m_nrf_comm.setTransferSize(TRANSFER_SIZE);
 
     m_nrf_comm.setReceiveMode();
+    m_nrf_comm.enableAutoAcknowledge(NRF24L01P_PIPE_P0);
     m_nrf_comm.enable();
+
+    print_nrf_info();
+}
+
+void NRF24::set_receiver() {
+    m_nrf_comm.setReceiveMode();
 }
 
 void NRF24::run_packet_error_rate_test(NRF24Config config) {
     int successful_transitions = 0;
-
+    
     for (int i = 0; i < TOTAL_MESSAGES_TO_TEST; i++)
     {
-        char* data = new char[TRANSFER_SIZE];
-        std::memcpy(data, TRANSFER_MESSAGE, sizeof(TRANSFER_SIZE));
+        send_message();
 
-        auto send_bytes = m_nrf_comm.write(NRF24L01P_PIPE_P0, data, sizeof(TRANSFER_SIZE));   
-
-        if(did_receive_acknowledgement()) {
+        if(did_receive_acknowledgement(config)) {
             successful_transitions++;
         }
+
+        thread_sleep_for(100);
     }
     
-    // print_stats(config, successful_transitions);
     print_csv_stats(config, successful_transitions);
 }
 
-bool NRF24::did_receive_acknowledgement() {
+void NRF24::send_message() {
+    char* data = new char[TRANSFER_SIZE];
+    std::memcpy(data, MESSAGE, TRANSFER_SIZE);
+
+    auto send_bytes = m_nrf_comm.write(NRF24L01P_PIPE_P0, data, TRANSFER_SIZE);   
+    delete[] data;
+}
+
+void NRF24::ensure_connection(NRF24Config& config) {
+    int counter = 0;
+    while(counter < 10) {
+        send_message();
+
+        ThisThread::sleep_for(100);
+
+        if(did_receive_acknowledgement(config)) {
+            counter++;
+        } else {
+            printf("did NOT receive message \r\n");
+        }
+    }
+}
+
+void NRF24::acknowledge_package(){
+    if(!m_nrf_comm.readable()) {
+        return;
+    }
+    
+    char data[TRANSFER_SIZE];
+
+    m_nrf_comm.read(NRF24L01P_PIPE_P0, data, sizeof(data));
+
+    thread_sleep_for(100);
+    printf("received: %s\r\n", data);
+
+    if(strcmp(data, "") == 0) {
+        printf("empty!\r\n");
+        return;
+    }
+
+    m_nrf_comm.write(NRF24L01P_PIPE_P0, data, sizeof(data));
+}
+
+bool NRF24::did_receive_acknowledgement(NRF24Config& config) {
+    char transfer_message[] = { 'C', 'o', 'd', '\0' };
+    //auto timeout_delay = static_cast<float>(config.auto_retransmission_delay * config.auto_retransmission_count) / 1000.0;
+    auto time_passed_in_sec = static_cast<float>(MAX_ACKNOWLEDGMENT_TIMEOUT_MS) / 1000.0;
+
     Timer timer;
     timer.start();
 
-    while(timer.read() < MAX_ACKNOWLEDGMENT_TIMEOUT_MS){
+    while(timer.read() < time_passed_in_sec){
+        if(!m_nrf_comm.readable()) {
+            continue;
+        }
+
         char* received_data = new char[TRANSFER_SIZE];
 
         m_nrf_comm.read(NRF24L01P_PIPE_P0, received_data, TRANSFER_SIZE);
 
-        if(received_data == TRANSFER_MESSAGE) {
+        if(strcmp(received_data, transfer_message) ==  0) {
             return true;
         }
+
+        delete[] received_data;
     }
 
     return false;
@@ -76,7 +135,7 @@ void NRF24::write_new_config(NRF24Config config) {
     m_nrf_comm.enableAutoRetransmit(config.auto_retransmission_delay, config.auto_retransmission_count);
 
     // print the info to the user, so they know what settings are tested
-    // print_nrf_info();
+    print_nrf_info();
 }
 
 void NRF24::print_csv_stats(NRF24Config config, int successful_transitions) {
@@ -93,6 +152,15 @@ void NRF24::print_csv_stats(NRF24Config config, int successful_transitions) {
         config.auto_retransmission_count, 
         successful_transitions, 
         TOTAL_MESSAGES_TO_TEST);
+}
+
+void NRF24::print_nrf_info() {
+    // Display the (default) setup of the nRF24L01+ chip
+    printf( "nRF24L01+ Frequency    : %d MHz\r\n",  m_nrf_comm.getRfFrequency() );
+    printf( "nRF24L01+ Output power : %d dBm\r\n",  m_nrf_comm.getRfOutputPower() );
+    printf( "nRF24L01+ Data Rate    : %d kbps\r\n", m_nrf_comm.getAirDataRate() );
+    printf( "nRF24L01+ TX Address   : 0x%010llX\r\n", m_nrf_comm.getTxAddress() );
+    printf( "nRF24L01+ RX Address   : 0x%010llX\r\n", m_nrf_comm.getRxAddress() );
 }
 
 // void NRF24::print_stats(NRF24Config config, int successful_transitions){
