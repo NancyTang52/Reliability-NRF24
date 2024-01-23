@@ -66,7 +66,7 @@ private:
 
     // Members
     nRF24L01P m_nrf_comm;
-    int8_t m_test_case_index = 0;
+    int16_t m_test_case_index = 0;
     bool m_did_receive_other_message = false;
     static constexpr int TOTAL_MESSAGES_TO_TEST = 100;
 };

@@ -36,14 +36,14 @@ NRF24::NRF24()
     print_nrf_info();
 }
 
-NRF24Config NRF24::generate_test_case(int8_t test_case_number) {
+NRF24Config NRF24::generate_test_case(int16_t test_case_number) {
     int8_t output_powers[] = OUTPUT_POWERS;
     uint16_t frequency_channels[] = FREQUENCY_CHANNELS;
     uint16_t data_rates[] = DATA_RATES;
     uint16_t delays[] = DELAYS;
     uint8_t counts[] = COUNTS;
 
-    int8_t tc_counter = -1;
+    int16_t tc_counter = -1;
 
     for(auto& output_power : output_powers) 
     {

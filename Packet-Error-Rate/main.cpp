@@ -2,7 +2,7 @@
 #include "nrf/nrf.h"
 #include <vector>
 
-#define TRANSMITTER     false
+#define TRANSMITTER     true
 #define REPEAT_TESTCASE 4
 
 void run_test_cases(NRF24& nrf24) {
