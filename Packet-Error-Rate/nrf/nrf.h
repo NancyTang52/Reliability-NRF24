@@ -33,7 +33,7 @@ public:
 
     NRF24();
 
-    static NRF24Config generate_test_case(int8_t test_case_number);
+    static NRF24Config generate_test_case(int16_t test_case_number);
 
     void set_receiver();
 
