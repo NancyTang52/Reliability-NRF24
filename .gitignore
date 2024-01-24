@@ -2,6 +2,7 @@
 .mbed
 projectfiles
 *.py*
+!serial_to_file.py
 *.csv
 mbed-os
 BUILD
