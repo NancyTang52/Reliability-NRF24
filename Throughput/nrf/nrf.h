@@ -5,8 +5,7 @@
 #include <string>
 
 
-// TODO: check if this is the best config
-#define OUTPUT_POWERS           {-18}
+#define OUTPUT_POWERS           {-12}
 #define FREQUENCY_CHANNELS      {2525}
 #define DATA_RATES              {1000, 250, 2000}
 #define DELAYS                  {1875}
@@ -57,12 +56,11 @@ private:
 
     // Members
     nRF24L01P m_nrf_comm;
-    int16_t m_test_case = 0;
+    int16_t m_test_case = 2;
     bool m_did_receive_other_message = false;
 
-    us_timestamp_t m_total_duration = 1;
-    //static constexpr uint32_t TOTAL_MESSAGES_TO_TEST = 10'000;
-    static constexpr uint32_t TOTAL_MESSAGES_TO_TEST = 1000;
+    us_timestamp_t m_total_duration = 0;
+    static constexpr uint32_t TOTAL_MESSAGES_TO_TEST = 10'000;
 };
 
 #endif

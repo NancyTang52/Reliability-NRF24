@@ -86,6 +86,7 @@ NRF24Config NRF24::get_current_config() {
 }
 
 void NRF24::run_troughput_test() {
+    m_total_duration = 0;
     auto config = get_current_config();
     write_new_config(config);
 

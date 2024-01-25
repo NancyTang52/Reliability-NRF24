@@ -5,7 +5,7 @@
 #include <vector>
 
 #define TRANSMITTER     true
-#define REPEAT_TESTCASE 1
+#define REPEAT_TESTCASE 4
 
 void run_test_case(NRF24& nrf24) {
     printf("start \r\n");
