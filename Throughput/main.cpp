@@ -28,23 +28,6 @@ void receive_test_cases(NRF24& nrf24) {
 int main() {
     NRF24 nrf24;
 
-    uint32_t value = 1000;
-
-    char* data = reinterpret_cast<char*>(&value);
-
-    MBED_ASSERT(sizeof(data) == sizeof(uint32_t));
-
-    char arr[sizeof(data)];
-
-    memcpy(&arr, data, sizeof(uint32_t));
-
-    uint32_t number;
-    
-    memcpy(&number, arr, sizeof(number));
-
-    printf("%d \r\n", number);
-
-
     if(TRANSMITTER) 
     {
         auto config = nrf24.get_current_config();
