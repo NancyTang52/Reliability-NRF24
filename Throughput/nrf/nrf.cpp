@@ -85,7 +85,7 @@ NRF24Config NRF24::get_current_config() {
     return generate_test_case(m_test_case);
 }
 
-void NRF24::run_troughput_test() {
+void NRF24::run_throughput_test() {
     m_total_duration = 0;
     auto config = get_current_config();
     write_new_config(config);
@@ -123,7 +123,6 @@ void NRF24::send_message(char* data, bool should_measure) {
 }
 
 bool NRF24::did_receive_acknowledgement(NRF24Config& config, char* message) {
-    //auto timeout_delay = static_cast<float>(config.auto_retransmission_delay * config.auto_retransmission_count) / 1000.0;
     auto time_passed_in_sec = static_cast<float>(MAX_ACKNOWLEDGMENT_TIMEOUT_MS) / 1000.0;
 
     Timer timer;

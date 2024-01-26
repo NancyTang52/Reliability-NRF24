@@ -12,7 +12,7 @@ void run_test_case(NRF24& nrf24) {
 
     for (size_t j = 0; j < REPEAT_TESTCASE; j++)
     {    
-        nrf24.run_troughput_test();
+        nrf24.run_throughput_test();
     }
     
     printf("end \r\n");

@@ -4,7 +4,6 @@
 #include "nRF24L01P.h"
 #include <string>
 
-
 #define OUTPUT_POWERS           {-12}
 #define FREQUENCY_CHANNELS      {2525}
 #define DATA_RATES              {1000, 250, 2000}
@@ -37,7 +36,7 @@ public:
 
     NRF24Config get_current_config();
 
-    void run_troughput_test();
+    void run_throughput_test();
 
     void send_message(char* data, bool should_measure = true);
 
