@@ -203,7 +203,6 @@ void NRF24::acknowledge_package(){
 }
 
 bool NRF24::did_receive_acknowledgement(NRF24Config& config, char* message) {
-    //auto timeout_delay = static_cast<float>(config.auto_retransmission_delay * config.auto_retransmission_count) / 1000.0;
     auto time_passed_in_sec = static_cast<float>(MAX_ACKNOWLEDGMENT_TIMEOUT_MS) / 1000.0;
 
     Timer timer;
@@ -265,10 +264,3 @@ void NRF24::print_nrf_info() {
     printf( "nRF24L01+ TX Address   : 0x%010llX\r\n", m_nrf_comm.getTxAddress() );
     printf( "nRF24L01+ RX Address   : 0x%010llX\r\n", m_nrf_comm.getRxAddress() );
 }
-
-// void NRF24::print_stats(NRF24Config config, int successful_transitions){
-//     printf("==============================================\r\n");
-//     printf("Packet Error Rate Result of testcase %s\r\n", config.test_name);
-//     printf( "The packet Error Rate have     : %d successfully transitions of %d total transitions \r\n",successful_transitions, TOTAL_MESSAGES_TO_TEST);
-//     printf("==============================================\r\n");
-// }

@@ -4,7 +4,6 @@
 #include "nRF24L01P.h"
 #include <string>
 
-
 #define OUTPUT_POWERS           {-12, 0, -18}
 #define FREQUENCY_CHANNELS      {2525, 2463, 2400}
 #define DATA_RATES              {1000, 250, 2000}
@@ -55,10 +54,6 @@ public:
 
 private:
     void next_config_index();
-
-    // void print_nrf_info();
-
-    // void print_stats(NRF24Config config, int successful_transitions);
 
     void print_csv_stats(NRF24Config config, int successful_transitions);
 
